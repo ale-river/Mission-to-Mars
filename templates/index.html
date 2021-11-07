@@ -1,76 +1,104 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Mission to Mars</title>
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-    />
-  </head>
-  <body>
-    <div class="container">
-      <!-- Add Jumbotron to Header -->
-      <div class="jumbotron text-center" style="background-image: url('https://wallpapercave.com/wp/wp2461878.jpg'); background-position: center; background-size: cover;height: 250px;">
-        <h1 style="color:blue">Mission to Mars</h1>
-        <!-- Add a button to activate scraping script -->
-        <p><a class="btn btn-danger btn-xs" href="/scrape" role="button">Scrape New Data</a></p>
-      </div>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Mars Data</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" 
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <style>
+        .dataframe{
+            border:2px solid black;
+        }
+        h5{
+            font-size: 20px;
+        }
+        p{
+            font-size: 15px
+        }
+        
+    </style>
+</head>
+<body>
 
-      <!-- Add section for Mars News -->
-      <div class="row" id="mars-news">
-        <div class="col-md-12">
-          <div class="media">
-            <div class="media-body">
-              <h2>Latest Mars News</h2>
-              <h4 class="media-heading">{{ mars.news_title }}</h4>
-              <p>{{ mars.news_paragraph }}</p>
-            </div>
-          </div>
+    <!--jumbotron-->
+    <div class = "container" style="text-align:center;">
+        <div class="jumbotron">
+            <h1 class="display-4" style="font-weight:500;">Mission to Mars</h1>
+            <p class="lead">
+               <a class="btn btn-primary btn-lg" href="/scrape" role="button">Scrape new data</a>
+            </p>
         </div>
-      </div>
-
-      <!-- Section for Featured Image and Facts table -->
-      <div class="row" id="mars-featured-image">
-        <div class="col-lg-8 col-md-8 col-sm-12">
-          <h2>Featured Mars Image</h2>
-          <!-- if images is False/None/non-existent, then default to error message -->
-          <img
-            src="{{mars.featured_image | default('static/images/error.png', true) }}"
-            class="img-responsive"
-            alt="Responsive image"
-          />
-        </div>
-
-        <div class="col-lg-4 col-md-4 col-sm-12">
-          <!-- Mars Facts -->
-          <div class="table" id="mars-facts">
-            <h4>Mars Facts</h4>
-            {{ mars.facts | safe }}
-          </div>
-        </div>
-      </div>
-
-      <!-- Section for Mars Hemispheres -->
-      <div class="row" id="mars-hemispheres">
-        <div class="page-header">
-          <h2 class="text-center">Mars Hemispheres</h2>
-        </div>
-
-        {% for hemisphere in mars.hemispheres %}
-        <div class="col-md-6">
-          <div class="thumbnail">
-            <img src="{{hemisphere.img_url | default('static/images/error.png', true)}}" alt="Responsive image" class="img-responsive" >
-            <div class="caption">
-              <h3>{{hemisphere.title}}</h3>
-            </div>
-          </div>
-          
-        </div>
-        {% endfor %}
-      </div>
     </div>
-  </body>
+    
+    <!--first section-->
+    <div class="container">
+        <h4>Latest Mars News</h4>
+        <h5>{{mars_data.mars_news.news_title}}</h5>
+        <p>{{mars_data.mars_news.news_p}}</p>
+    </div>
+
+
+    <!--second section-->
+    <div class = "container">
+        <div class = "row">
+            
+            <!--left container-->
+            <div class="col-8">
+                <h4>Featured Mars Image</h4>
+                <img src={{mars_data.mars_img}} class="img-fluid" alt="Responsive image" style="max-width:100%; max-height: auto;">
+            </div>
+
+            <!--right container-->
+            <div class="col-4">
+                <div style="border: 1px solid lightgray; padding: 20px; border-radius: 5px" > 
+                    <h5>Current Weather on Mars</h5>
+                    <p>{{mars_data.mars_weather}}</p>
+                </div>
+                <div style="margin-top:30px;">
+                    <!-- table -->
+                    <h5>Mars Facts</h5>
+                    <div style="max-width: 400px; max-height: 100px; font-size: 15px; margin-bottom: 50px;">
+                        {{mars_data.mars_fact|safe}}
+                    </div>
+                </div> 
+            </div>
+
+        </div>
+    </div>
+    
+
+    <!--third section for imgs-->
+    <div class="container" style="margin-top: 100px;">
+        <h4 style="padding-top: 50px; text-align: center;">Mars Hemispheres</h4>
+        <hr>
+
+        <div class="col-12">
+            <div class="row">
+
+                {% for img in mars_data.mars_hemisphere %}
+                <div class = "col-6">
+                    <!--card items-->
+                    <div class="card" style="margin: 30px;">
+                        <img src="{{img.img_url}}" class="card-img-top">
+                        <div class="card-body">
+                            <p class="card-text" style="font-weight: 700;">{{img.title}}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" 
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" 
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" 
+    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+</body>
 </html>

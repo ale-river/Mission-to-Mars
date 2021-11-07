@@ -6,9 +6,10 @@
 
 # Import Splinter, BeautifulSoup, and Pandas
 from splinter import Browser
-from bs4 import BeautifulSoup as soup
+from bs4 import BeautifulSoup
 import pandas as pd
 from webdriver_manager.chrome import ChromeDriverManager
+import time
 
 
 # In[2]:
@@ -25,48 +26,38 @@ browser = Browser('chrome', **executable_path, headless=False)
 
 
 # Visit the mars nasa news site
-url = 'https://redplanetscience.com/'
-browser.visit(url)
-
-# Optional delay for loading the page
-browser.is_element_present_by_css('div.list_text', wait_time=1)
+news_url = 'https://mars.nasa.gov/news/'
+browser.visit(news_url)
 
 
 # In[4]:
 
 
-# Convert the browser html to a soup object and then quit the browser
-html = browser.html
-news_soup = soup(html, 'html.parser')
+time.sleep(4)
 
-slide_elem = news_soup.select_one('div.list_text')
+# Assign the HTML content of the page to a variable
+news_html = browser.html
+
+# Parse HTML with Beautifulsoup
+soup = BeautifulSoup(news_html,'html.parser')
 
 
 # In[5]:
 
 
-slide_elem.find('div', class_='content_title')
+# Retrieve the latest News Title and Paragraph Text
+result = soup.find('div', class_="list_text")
 
+news_title = result.a.text
+news_p = result.find('div',class_="article_teaser_body").text
 
-# In[6]:
-
-
-# Use the parent element to find the first a tag and save it as `news_title`
-news_title = slide_elem.find('div', class_='content_title').get_text()
-news_title
-
-
-# In[7]:
-
-
-# Use the parent element to find the paragraph text
-news_p = slide_elem.find('div', class_='article_teaser_body').get_text()
-news_p
+print(f"news_title: {news_title}")
+print(f"news_p: {news_p}")
 
 
 # ### JPL Space Images Featured Image
 
-# In[8]:
+# In[6]:
 
 
 # Visit URL
@@ -74,7 +65,7 @@ url = 'https://spaceimages-mars.com'
 browser.visit(url)
 
 
-# In[9]:
+# In[7]:
 
 
 # Find and click the full image button
@@ -82,16 +73,16 @@ full_image_elem = browser.find_by_tag('button')[1]
 full_image_elem.click()
 
 
-# In[10]:
+# In[8]:
 
 
 # Parse the resulting html with soup
 html = browser.html
-img_soup = soup(html, 'html.parser')
+img_soup = BeautifulSoup(html, 'html.parser')
 img_soup
 
 
-# In[11]:
+# In[9]:
 
 
 # find the relative image url
@@ -99,7 +90,7 @@ img_url_rel = img_soup.find('img', class_='fancybox-image').get('src')
 img_url_rel
 
 
-# In[12]:
+# In[10]:
 
 
 # Use the base url to create an absolute url
@@ -109,14 +100,14 @@ img_url
 
 # ### Mars Facts
 
-# In[13]:
+# In[11]:
 
 
 df = pd.read_html('https://galaxyfacts-mars.com')[0]
 df.head()
 
 
-# In[14]:
+# In[12]:
 
 
 df.columns=['Description', 'Mars', 'Earth']
@@ -124,7 +115,7 @@ df.set_index('Description', inplace=True)
 df
 
 
-# In[15]:
+# In[13]:
 
 
 df.to_html()
@@ -134,13 +125,39 @@ df.to_html()
 
 # ### Hemispheres
 
-# In[16]:
+# In[14]:
 
 
 # 1. Use browser to visit the URL 
-url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+hemisphere_url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
 
-browser.visit(url)
+browser.visit(hemisphere_url)
+
+
+# In[15]:
+
+
+time.sleep(4)
+
+# Assign the HTML content of the page to a variable
+hemisphere_html = browser.html
+# Parse HTML with Beautifulsoup
+soup = BeautifulSoup(hemisphere_html,'html.parser')
+
+
+# In[16]:
+
+
+# Collect the urls for the hemisphere images
+items = soup.find_all("div", class_="item")
+
+main_url = "https://astrogeology.usgs.gov"
+hemisphere_urls = []
+
+for item in items:
+    hemisphere_urls.append(f"{main_url}{item.find('a', class_='itemLink')['href']}")
+
+print(*hemisphere_urls, sep = "\n")
 
 
 # In[17]:
@@ -150,17 +167,21 @@ browser.visit(url)
 hemisphere_image_urls = []
 
 # 3. Write code to retrieve the image urls and titles for each hemisphere.
-for i in range(4):
-    #create empty dictionary
-    hemispheres = {}
-    browser.find_by_css('a.product-item h3')[i].click()
-    element = browser.find_link_by_text('Sample').first
-    img_url = element['href']
-    title = browser.find_by_css("h2.title").text
-    hemispheres["img_url"] = img_url
-    hemispheres["title"] = title
-    hemisphere_image_urls.append(hemispheres)
-    browser.back()
+for url in hemisphere_urls:
+    # Navigate to the page
+    browser.visit(url)
+    
+    time.sleep(4)
+    
+    # Assign the HTML content of the page to a variable
+    hemisphere_html = browser.html
+    # Parse HTML with Beautifulsoup
+    soup = BeautifulSoup(hemisphere_html,'html.parser')
+    
+    img_url = soup.find('img', class_="wide-image")['src']
+    title = soup.find('h2', class_="title").text
+    
+    hemisphere_image_urls.append({"title":title,"img_url":f"https://astrogeology.usgs.gov{img_url}"})
 
 
 # In[18]:

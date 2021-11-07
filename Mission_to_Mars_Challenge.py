@@ -26,8 +26,8 @@ browser = Browser('chrome', **executable_path, headless=False)
 
 
 # Visit the mars nasa news site
-news_url = 'https://mars.nasa.gov/news/'
-browser.visit(news_url)
+url = 'https://mars.nasa.gov/news/'
+browser.visit(url)
 
 
 # In[4]:
@@ -129,9 +129,9 @@ df.to_html()
 
 
 # 1. Use browser to visit the URL 
-hemisphere_url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
 
-browser.visit(hemisphere_url)
+browser.visit(url)
 
 
 # In[15]:

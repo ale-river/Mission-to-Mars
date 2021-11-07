@@ -17,7 +17,7 @@
 
       <!-- Add Jumbotron to Header -->
       <div class="jumbotron text-center" style="background-image: url('https://wallpapercave.com/wp/wp2461878.jpg'); background-position: center; background-size: cover;height: 250px;">
-        <h1 style="color:blue">Mission to Mars</h1>
+        <h1 style="color:black">Mission to Mars</h1>
         <!-- Add a button to activate scraping script -->
         <p><a class="btn btn-danger btn-xs" href="/scrape" role="button">Scrape New Data</a></p>
       </div>
@@ -66,7 +66,7 @@
                     <div class="col-md-6">
                         <div class="card text-white bg-danger" style="margin: 30px;">
                             <!-- If Images are False/None/Non-Existent, Then Default to Error Message -->
-                            <img class="card-img-top" src="{{hemisphere.img_url | default('static/images/error.png', true)}}" alt="..."/>
+                            <img class="img-responsive" src="{{hemisphere.img_url | default('static/images/error.png', true)}}" alt="..."/>
                             <div class="card-body">
                                 <p class="card-text">{{hemisphere.title}}</p>
                             </div>

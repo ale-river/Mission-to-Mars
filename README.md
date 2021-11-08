@@ -39,9 +39,9 @@ The HTML scraped website run through the link http://127.0.0.1:5000/
 
 ![Mission_to_Mars](resources/":"_route.png)
 
-- AFTER INCLUDING DELIVERABLES IN WEBSITE Mission to Mars -> Headline :earth:
+- AFTER INCLUDING DELIVERABLES IN WEBSITE Mission to Mars -> Headline :vulcan_salute:
 
-![Website](resources/":"_challenge_website.png])
+![Website](resources/":"_challenge_website.png)
 
 ## **Summary
 
